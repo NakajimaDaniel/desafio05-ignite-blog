@@ -12,6 +12,9 @@ import Header from '../components/Header';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+import { format } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
+
 interface Post {
   uid?: string;
   first_publication_date: string | null;
@@ -35,40 +38,17 @@ interface HomeProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function Home({ postsPagination }: HomeProps) {
 
-
+  console.log(postsPagination.results)
   const [nextPageLink, setNextPageLink] = useState(postsPagination.next_page);
 
   const [goNextPage, setGoNextPage] = useState(false)
   
   const [postData, setPostData] = useState(postsPagination.results)
 
-  
-  const totalPosts = postsPagination.results.concat(postData)
+
   
   const handleNextPage = () => {
     setGoNextPage(!goNextPage)
-
-    // fetch(nextPageLink)
-    // .then(response => response.json())
-    // .then(data =>
-    //   setPostData(data.results.map(post => {
-    //     return {
-    //       uid: post.uid,
-
-    //       first_publication_date: new Date(post.first_publication_date).toLocaleDateString('pt-br', {
-    //         day: '2-digit',
-    //         month: 'short',
-    //         year: 'numeric'
-    //       }),
-    //       data: {
-    //         title: post.data.title,
-    //         subtitle: post.data.subtitle,
-    //         author: post.data.author,
-    //       },
-    //     }
-    //   }
-    // ))
-    // ) 
 
   fetch(nextPageLink)
     .then(response => response.json())
@@ -77,11 +57,13 @@ export default function Home({ postsPagination }: HomeProps) {
       const dataToLoad = data.results.map(post => {
         return {        
           uid: post.uid,
-          first_publication_date: new Date(post.first_publication_date).toLocaleDateString('pt-br', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-          }),
+          // first_publication_date: new Date(post.first_publication_date).toLocaleDateString('pt-br', {
+          //   day: '2-digit',
+          //   month: 'short',
+          //   year: 'numeric'
+          // }),
+          // first_publication_date: format(new Date(post.first_publication_date), 'dd MMM yyyy', {locale: ptBR, }),
+          first_publication_date: post.first_publication_date,
           data: {
             title: post.data.title,
             subtitle: post.data.subtitle,
@@ -103,6 +85,7 @@ export default function Home({ postsPagination }: HomeProps) {
   return (
     <div>
       <Header/>
+
       <div className={styles.main}>
         <div className={styles.posts}>
           {postData?.map(posts => (
@@ -112,7 +95,7 @@ export default function Home({ postsPagination }: HomeProps) {
                   <p>{posts.data.subtitle}</p>
                   <div className={styles.info}>
                     <FiCalendar/>
-                    <p>{posts.first_publication_date}</p>
+                    <p>{format(new Date(posts.first_publication_date), 'dd MMM yyyy', {locale: ptBR, })}</p>
                     <FiUser/>
                     <p>{posts.data.author}</p>
                   </div>
@@ -148,11 +131,14 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
       uid: post.uid,
 
-      first_publication_date: new Date(post.first_publication_date).toLocaleDateString('pt-br', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric'
-      }),
+      // first_publication_date: new Date(post.first_publication_date).toLocaleDateString('pt-br', {
+      //   day: '2-digit',
+      //   month: 'short',
+      //   year: 'numeric'
+      // }),
+
+      // first_publication_date: format(new Date(post.first_publication_date), 'dd MMM yyyy', {locale: ptBR, }),
+      first_publication_date: post.first_publication_date,
       data: {
         title: post.data.title,
         subtitle: post.data.subtitle,
