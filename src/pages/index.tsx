@@ -38,7 +38,7 @@ interface HomeProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function Home({ postsPagination }: HomeProps) {
 
-  console.log(postsPagination.results)
+  // console.log(postsPagination.results)
   const [nextPageLink, setNextPageLink] = useState(postsPagination.next_page);
 
   const [goNextPage, setGoNextPage] = useState(false)
@@ -75,8 +75,8 @@ export default function Home({ postsPagination }: HomeProps) {
 
       setPostData(postData.concat(dataToLoad))
       setNextPageLink(data?.next_page)
-      console.log(nextPageLink)
-      console.log(postData)
+      // console.log(nextPageLink)
+      // console.log(postData)
     }) 
 
 
