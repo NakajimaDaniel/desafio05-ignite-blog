@@ -8,8 +8,11 @@ import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
 import Header from '../../components/Header';
 import { RichText } from 'prismic-dom';
+import { FiCalendar, FiUser } from "react-icons/fi";
+import { WiTime4 } from 'react-icons/wi';
 
-
+import ptBR from 'date-fns/locale/pt-BR';
+import { format } from 'date-fns';
 interface Post {
   first_publication_date: string | null;
   data: {
@@ -31,7 +34,7 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post({post}: Post) {
+export default function Post({post}) {
   // TODO
   console.log(post)
   return (
@@ -40,7 +43,19 @@ export default function Post({post}: Post) {
       <div className={styles.main}>
         <img src={post.data.banner.url.url} alt="banner"></img>
         <div className={styles.content}>
-        <h1></h1>
+          <h1>{post.data.title}</h1>
+
+          <div className={styles.info}>
+            <FiCalendar/>
+            <p>{format(new Date(post.first_publication_date), 'dd MMM yyyy', {locale: ptBR, })}</p>
+            <FiUser/>
+            <p>{post.data.author}</p>
+            <WiTime4/>
+            <p>4min</p>
+          </div>
+
+          <div className={styles.body} dangerouslySetInnerHTML={{__html: post.data.content.body}}/>
+          
         </div>
       </div>
     </div>
