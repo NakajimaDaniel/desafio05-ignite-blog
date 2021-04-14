@@ -13,6 +13,8 @@ import { WiTime4 } from 'react-icons/wi';
 
 import ptBR from 'date-fns/locale/pt-BR';
 import { format } from 'date-fns';
+
+
 interface Post {
   first_publication_date: string | null;
   data: {
@@ -36,12 +38,34 @@ interface PostProps {
 
 export default function Post({post}) {
   // TODO
-  console.log(post)
+
+  
+  function WordCount(str) { 
+    return str.split(" ").length;
+  }
+
+  function ReadingTime(wordCount) {
+    return Math.round(wordCount/200);
+  }
+
+
+  const count = post.data.content.map(post => {
+    return post.body.map(body => {
+      return WordCount(body.text)
+    })
+  })
+
+  const countNumber = count.pop().pop()
+
+  const totalTime = ReadingTime(countNumber)
+
+
+
   return (
     <div>
       <Header/>
       <div className={styles.main}>
-        <img src={post.data.banner.url.url} alt="banner"></img>
+        <img src={post.data.banner.url} alt="banner"></img>
         <div className={styles.content}>
           <h1>{post.data.title}</h1>
 
@@ -51,10 +75,15 @@ export default function Post({post}) {
             <FiUser/>
             <p>{post.data.author}</p>
             <WiTime4/>
-            <p>4min</p>
+            <p>{totalTime} min</p>
           </div>
 
-          <div className={styles.body} dangerouslySetInnerHTML={{__html: post.data.content.body}}/>
+          {/* <div className={styles.body} dangerouslySetInnerHTML={{__html: post.data.content.body}}/> */}
+
+          {post.data.content.map((post) => (
+            <div className={styles.body} dangerouslySetInnerHTML={{__html: RichText.asHtml(post.body)}}/>
+
+          ))}
           
         </div>
       </div>
