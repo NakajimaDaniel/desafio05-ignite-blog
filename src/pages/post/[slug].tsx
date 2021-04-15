@@ -39,27 +39,28 @@ interface PostProps {
 export default function Post({post}) {
   // TODO
 
-  
   function WordCount(str) { 
     return str.split(" ").length;
   }
 
   function ReadingTime(wordCount) {
-    return Math.round(wordCount/200);
+    return Math.ceil(wordCount/200);
   }
 
+  const posta = post.data.content.reduce((acc, text) => {
 
-  const count = post.data.content.map(post => {
-    return post.body.map(body => {
-      return WordCount(body.text)
-    })
-  })
+    const body = RichText.asText(text.body)
+    const heading = text.heading
 
-  const countNumber = count.pop().pop()
+    const totalHeadingWords = heading.split(/[\s,]+/).length
+    const totalBodyWords = body.split(/[\s,]+/).length
 
-  const totalTime = ReadingTime(countNumber)
+    acc = (totalHeadingWords + totalBodyWords) /200
+    
+    return acc
+  }, {})
 
-
+  console.log(posta)
 
   return (
     <div>
@@ -75,7 +76,7 @@ export default function Post({post}) {
             <FiUser/>
             <p>{post.data.author}</p>
             <WiTime4/>
-            <p>{totalTime} min</p>
+            <p>{posta} min</p>
           </div>
 
           {/* <div className={styles.body} dangerouslySetInnerHTML={{__html: post.data.content.body}}/> */}
@@ -131,6 +132,7 @@ export const getStaticProps: GetStaticProps = async ({params}) => {
     }
   }
 
+  
 
 
 
