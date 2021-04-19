@@ -39,28 +39,25 @@ interface PostProps {
 export default function Post({post}) {
   // TODO
 
-  function WordCount(str) { 
-    return str.split(" ").length;
-  }
 
-  function ReadingTime(wordCount) {
-    return Math.ceil(wordCount/200);
-  }
+  const body = post.data.content.map((post) => {
+    return RichText.asText(post.body).split(/[\s,]+/).length
+  })
 
-  const posta = post.data.content.reduce((acc, text) => {
+  const heading = post.data.content.map((post) => {
+    return post.heading.split(/[\s,]+/).length
+  })
 
-    const body = RichText.asText(text.body)
-    const heading = text.heading
+  const postBody = body.reduce((acc, body) => {
+    return acc += body
+  })
 
-    const totalHeadingWords = heading.split(/[\s,]+/).length
-    const totalBodyWords = body.split(/[\s,]+/).length
+  const postHeading = heading.reduce((acc, heading) => {
+    return acc+= heading
+  })
 
-    acc = (totalHeadingWords + totalBodyWords) /200
-    
-    return acc
-  }, {})
+  const totalReadingTime = Math.ceil((postBody+postHeading)/200)
 
-  console.log(posta)
 
   return (
     <div>
@@ -76,15 +73,20 @@ export default function Post({post}) {
             <FiUser/>
             <p>{post.data.author}</p>
             <WiTime4/>
-            <p>{posta} min</p>
+            <p>{totalReadingTime} min</p>
           </div>
 
           {/* <div className={styles.body} dangerouslySetInnerHTML={{__html: post.data.content.body}}/> */}
+    
+          {post.data.content.map((post) => {
+            return(
+              <div>
+                <div>{post.heading}</div>
+                <div className={styles.body} dangerouslySetInnerHTML={{__html: RichText.asHtml(post.body)}}/>
+              </div>
 
-          {post.data.content.map((post) => (
-            <div className={styles.body} dangerouslySetInnerHTML={{__html: RichText.asHtml(post.body)}}/>
-
-          ))}
+            )
+          })}
           
         </div>
       </div>
