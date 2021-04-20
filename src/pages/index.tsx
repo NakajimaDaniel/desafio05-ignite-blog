@@ -39,13 +39,11 @@ interface HomeProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function Home({ postsPagination }: HomeProps) {
 
-  // console.log(postsPagination.results)
   const [nextPageLink, setNextPageLink] = useState(postsPagination.next_page);
 
   const [goNextPage, setGoNextPage] = useState(false)
   
   const [postData, setPostData] = useState(postsPagination.results)
-
 
   
   const handleNextPage = () => {
@@ -58,12 +56,6 @@ export default function Home({ postsPagination }: HomeProps) {
       const dataToLoad = data.results.map(post => {
         return {        
           uid: post.uid,
-          // first_publication_date: new Date(post.first_publication_date).toLocaleDateString('pt-br', {
-          //   day: '2-digit',
-          //   month: 'short',
-          //   year: 'numeric'
-          // }),
-          // first_publication_date: format(new Date(post.first_publication_date), 'dd MMM yyyy', {locale: ptBR, }),
           first_publication_date: post.first_publication_date,
           data: {
             title: post.data.title,
@@ -76,8 +68,6 @@ export default function Home({ postsPagination }: HomeProps) {
 
       setPostData(postData.concat(dataToLoad))
       setNextPageLink(data?.next_page)
-      // console.log(nextPageLink)
-      // console.log(postData)
     }) 
 
 
@@ -131,14 +121,6 @@ export const getStaticProps: GetStaticProps = async () => {
   const posts = postsResponse.results.map(post => {
     return {
       uid: post.uid,
-
-      // first_publication_date: new Date(post.first_publication_date).toLocaleDateString('pt-br', {
-      //   day: '2-digit',
-      //   month: 'short',
-      //   year: 'numeric'
-      // }),
-
-      // first_publication_date: format(new Date(post.first_publication_date), 'dd MMM yyyy', {locale: ptBR, }),
       first_publication_date: post.first_publication_date,
       data: {
         title: post.data.title,

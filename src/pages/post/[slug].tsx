@@ -37,27 +37,24 @@ interface PostProps {
 }
 
 export default function Post({post}) {
-  // TODO
-
 
   const body = post.data.content.map((post) => {
-    return RichText.asText(post.body).split(/[\s,]+/).length
+    return RichText.asText(post.body).split(/[\s,]+/).length;
   })
 
   const heading = post.data.content.map((post) => {
-    return post.heading.split(/[\s,]+/).length
+    return post.heading.split(/[\s,]+/).length;
   })
 
   const postBody = body.reduce((acc, body) => {
-    return acc += body
+    return acc += body;
   })
 
   const postHeading = heading.reduce((acc, heading) => {
-    return acc+= heading
+    return acc+= heading;
   })
 
-  const totalReadingTime = Math.ceil((postBody+postHeading)/200)
-
+  const totalReadingTime = Math.ceil((postBody+postHeading)/200);
 
 
   const router = useRouter()
@@ -82,8 +79,7 @@ export default function Post({post}) {
             <p>{totalReadingTime} min</p>
           </div>
 
-          {/* <div className={styles.body} dangerouslySetInnerHTML={{__html: post.data.content.body}}/> */}
-    
+
           {post.data.content.map((post) => {
             return(
               <div>
@@ -101,10 +97,7 @@ export default function Post({post}) {
 }
 
 
-
 export const getStaticPaths: GetStaticPaths = async () => {
-
-    //   // TODO  
 
 
   const prismic = getPrismicClient();
@@ -123,15 +116,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
       },
     }
   })
-
-  console.log(posts1)
-    
+ 
 
   return {
     paths: posts1,
     fallback: true
   }
-
 
 };
 
@@ -150,18 +140,11 @@ export const getStaticProps: GetStaticProps = async ({params}) => {
       subtitle: response.data.subtitle,
       banner: response.data.banner,
       author: response.data.author,
-      content: 
-        // heading: response.data.content.map(reference => {return reference.heading}),
-        // // body: response.data.content.map(reference => { return RichText.asHtml(reference.body)})
-        // body: response.data.content.map(reference => { return reference.body})
-        response.data.content
+      content: response.data.content
 
-      
     }
   }
 
-  
-  // TODO
 
   return {
     props: {post}
