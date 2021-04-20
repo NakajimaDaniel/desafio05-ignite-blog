@@ -13,7 +13,7 @@ import { WiTime4 } from 'react-icons/wi';
 
 import ptBR from 'date-fns/locale/pt-BR';
 import { format } from 'date-fns';
-
+import {useRouter} from 'next/router';
 
 interface Post {
   first_publication_date: string | null;
@@ -59,6 +59,12 @@ export default function Post({post}) {
   const totalReadingTime = Math.ceil((postBody+postHeading)/200)
 
 
+
+  const router = useRouter()
+
+  if (router.isFallback) {
+    return <div>Carregando...</div>
+ } 
   return (
     <div>
       <Header/>
@@ -94,15 +100,37 @@ export default function Post({post}) {
   )
 }
 
+
+
 export const getStaticPaths: GetStaticPaths = async () => {
-  // const prismic = getPrismicClient();
-  // const posts = await prismic.query();
+
     //   // TODO  
 
+
+  const prismic = getPrismicClient();
+  const postsResponse = await prismic.query([
+    Prismic.Predicates.at('document.type', 'posts')
+  ], {
+    fetch: ['posts.title', 'posts.subtitle', 'posts.author','posts.content'],
+    pageSize: 2,
+  });
+
+
+  const posts1 = postsResponse.results.map(post => {
     return {
-      paths: [],
-      fallback: 'blocking'
+      params: {
+        slug: post.uid,
+      },
     }
+  })
+
+  console.log(posts1)
+    
+
+  return {
+    paths: posts1,
+    fallback: true
+  }
 
 
 };
@@ -111,11 +139,9 @@ export const getStaticProps: GetStaticProps = async ({params}) => {
 
   const {slug} = params;
 
-
-
   const prismic = getPrismicClient();
+
   const response = await prismic.getByUID('posts', String(slug), {})
-  console.log(response)
   const post = {
     first_publication_date: response.first_publication_date,
     uid: response.uid,
@@ -135,12 +161,11 @@ export const getStaticProps: GetStaticProps = async ({params}) => {
   }
 
   
-
-
-
   // TODO
 
   return {
     props: {post}
   }
+
+
 };
